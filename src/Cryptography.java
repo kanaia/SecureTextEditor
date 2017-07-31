@@ -20,10 +20,10 @@ public class Cryptography {
 
 		Cipher cipher = Cipher.getInstance(ciphermethod, "BC");
 
-		if (cipherMode.equals("CBC") || cipherMode.equals("CTS")) {
-			cipher.init(Cipher.ENCRYPT_MODE, key, ivSpec);
-		} else {
+		if (cipherMode.equals("ECB")) {
 			cipher.init(Cipher.ENCRYPT_MODE, key);
+		} else {
+			cipher.init(Cipher.ENCRYPT_MODE, key, ivSpec);
 		}
 		byte[] cipherText = new byte[cipher.getOutputSize(input.length)];
 
@@ -45,10 +45,10 @@ public class Cryptography {
 
 		Cipher cipher = Cipher.getInstance(ciphermethod, "BC");
 
-		if (cipherMode.equals("CBC") || cipherMode.equals("CTS")) {
-			cipher.init(Cipher.DECRYPT_MODE, key, ivSpec);
-		} else {
+		if (cipherMode.equals("ECB")) {
 			cipher.init(Cipher.DECRYPT_MODE, key);
+		} else {
+			cipher.init(Cipher.DECRYPT_MODE, key, ivSpec);
 		}
 		byte[] plainText = new byte[cipher.getOutputSize(input.length)];
 
@@ -71,10 +71,10 @@ public class Cryptography {
 
 		Cipher cipher = Cipher.getInstance(ciphermethod, "BC");
 
-		if (cipherMode.equals("CBC") || cipherMode.equals("CTS")) {
-			cipher.init(Cipher.ENCRYPT_MODE, key, ivSpec);
-		} else {
+		if (cipherMode.equals("ECB")) {
 			cipher.init(Cipher.ENCRYPT_MODE, key);
+		} else {
+			cipher.init(Cipher.ENCRYPT_MODE, key, ivSpec);
 		}
 		byte[] cipherText = new byte[cipher.getOutputSize(input.length)];
 
@@ -96,10 +96,10 @@ public class Cryptography {
 
 		Cipher cipher = Cipher.getInstance(ciphermethod, "BC");
 
-		if (cipherMode.equals("CBC") || cipherMode.equals("CTS")) {
-			cipher.init(Cipher.DECRYPT_MODE, key, ivSpec);
-		} else {
+		if (cipherMode.equals("ECB")) {
 			cipher.init(Cipher.DECRYPT_MODE, key);
+		} else {
+			cipher.init(Cipher.DECRYPT_MODE, key, ivSpec);
 		}
 		byte[] plainText = new byte[cipher.getOutputSize(input.length)];
 

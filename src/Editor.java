@@ -49,91 +49,52 @@ public class Editor {
 			dialog.setSize(400, 270);
 			dialog.setModal(true);
 			dialog.setResizable(false);
-			dialog.setLayout(new GridLayout(4, 1));
+			dialog.setLayout(new GridLayout(1, 5));
 			// decrypt
-			JPanel decryptPanel = new JPanel();
-			JLabel decrypt = new JLabel("Decrypt with:");
-			decryptPanel.add(decrypt);
-			JRadioButton aes = new JRadioButton("AES");
-			JRadioButton des = new JRadioButton("DES");
-			ButtonGroup dec = new ButtonGroup();
-			dec.add(aes);
-			dec.add(des);
-			decryptPanel.add(aes);
-			decryptPanel.add(des);
 
-			JPanel cipherModePanel = new JPanel();
-			JLabel ciphermode = new JLabel("Cipher Mode:");
-			cipherModePanel.add(ciphermode);
-			JRadioButton ecb = new JRadioButton("ECB");
-			JRadioButton cbc = new JRadioButton("CBC");
-			JRadioButton cts = new JRadioButton("CTS");
-			ButtonGroup cm = new ButtonGroup();
-			cm.add(ecb);
-			cm.add(cbc);
-			cm.add(cts);
-			cipherModePanel.add(ecb);
-			cipherModePanel.add(cbc);
-			cipherModePanel.add(cts);
-
-			JPanel paddingPanel = new JPanel();
-			JLabel padding = new JLabel("Padding");
-			paddingPanel.add(padding);
-			JRadioButton pkcs7 = new JRadioButton("PKCS7Padding");
-			JRadioButton noP = new JRadioButton("NoPadding");
-			JRadioButton zbP = new JRadioButton("ZeroBytePadding");
-			ButtonGroup pad = new ButtonGroup();
-			pad.add(pkcs7);
-			pad.add(noP);
-			pad.add(zbP);
-			paddingPanel.add(pkcs7);
-			paddingPanel.add(noP);
-			paddingPanel.add(zbP);
-
-			dialog.add(decryptPanel, 0);
-			dialog.add(cipherModePanel, 1);
-			dialog.add(paddingPanel, 2);
+			String[] encModeList = {"", "AES", "DES", "PBEWithSHAAnd128BitAES-CBC-BC", "PBEWithMD5AndDES", "PBEWithSHAAnd40BitRC4"};
+			JComboBox encMode = new JComboBox(encModeList);
+			
+			String[] cipherModeList = {"", "ECB", "CBC", "CTS", "CTR", "OFB", "CFB", "GCM"};
+			JComboBox cipherMode = new JComboBox(cipherModeList);
+			
+			String[] paddingList = {"", "PKCS7Padding", "NoPadding", "ZeroBytePadding"};
+			JComboBox padding = new JComboBox(paddingList);
+			
+			JTextField pw = new JTextField("Passwort");
+			dialog.add(encMode, 0);
+			dialog.add(cipherMode, 1);
+			dialog.add(padding, 2);
+			dialog.add(pw);
 
 			JButton go = new JButton("Go!");
 			dialog.add(go);
 
 			class DecL implements ActionListener {
 				public void actionPerformed(ActionEvent e) {
-					String encryption = "";
-					String cipherMode = "";
-					String padding = "";
-					if (aes.isSelected())
-						encryption = aes.getText();
-					if (des.isSelected())
-						encryption = des.getText();
+					String encryption = encMode.getSelectedItem().toString();
+					String cipherM = cipherMode.getSelectedItem().toString();
+					String pad = padding.getSelectedItem().toString();
 
-					if (ecb.isSelected())
-						cipherMode = ecb.getText();
-					if (cbc.isSelected())
-						cipherMode = cbc.getText();
-					if (cts.isSelected())
-						cipherMode = cts.getText();
-
-					if (pkcs7.isSelected())
-						padding = pkcs7.getText();
-					if (noP.isSelected())
-						padding = noP.getText();
-					if (zbP.isSelected())
-						padding = zbP.getText();
-
-					if (dec.getSelection() == null && cm.getSelection() == null && pad.getSelection() == null) {
+					if (encMode.getSelectedItem() == null && cipherMode.getSelectedItem() == null && padding.getSelectedItem() == null) {
 						FileChooser f = new FileChooser();
 						textArea.setText(f.open());
 					} else {
-						Cryptography c = new Cryptography();
 						try {
 							if(encryption.equals("AES")){
+								Cryptography c = new Cryptography();
 								FileChooser f = new FileChooser();
-								textArea.setText(c.decryptAES(f.open(), cipherMode, padding));
+								textArea.setText(c.decryptAES(f.open(), cipherM, pad));
 							}
 							else if(encryption.equals("DES")){
+								Cryptography c = new Cryptography();
 								FileChooser f = new FileChooser();
-								textArea.setText(c.decryptDES(f.open(), cipherMode, padding));
+								textArea.setText(c.decryptDES(f.open(), cipherM, pad));
+							}
+							else if(encryption.equals("PBEWithSHAAnd128BitAES-CBC-BC")){
+								PBCryptography c = new PBCryptography();
+								FileChooser f = new FileChooser();
+								textArea.setText(c.decodePBEWithSHAAnd128BitAES_CBC_BC(f.open(), pw.getText().toCharArray()));
 							}
 						} catch (Exception e1) {
 							e1.printStackTrace();
@@ -155,90 +116,54 @@ public class Editor {
 		public void actionPerformed(ActionEvent e) {
 			dialog = new JDialog();
 			dialog.setTitle("Encryption");
-			dialog.setSize(400, 270);
+			dialog.setSize(600, 50);
 			dialog.setModal(true);
 			dialog.setResizable(false);
-			dialog.setLayout(new GridLayout(4, 1));
+			dialog.setLayout(new GridLayout(1, 5));
 			// encrypt
 			JPanel encryptPanel = new JPanel();
 			JLabel encrypt = new JLabel("Encrypt with:");
 			encryptPanel.add(encrypt);
-			JRadioButton aes = new JRadioButton("AES");
-			JRadioButton des = new JRadioButton("DES");
-			ButtonGroup enc = new ButtonGroup();
-			enc.add(aes);
-			enc.add(des);
-			encryptPanel.add(aes);
-			encryptPanel.add(des);
-
-			JPanel cipherModePanel = new JPanel();
-			JLabel ciphermode = new JLabel("Cipher Mode:");
-			cipherModePanel.add(ciphermode);
-			JRadioButton ecb = new JRadioButton("ECB");
-			JRadioButton cbc = new JRadioButton("CBC");
-			JRadioButton cts = new JRadioButton("CTS");
-			ButtonGroup cm = new ButtonGroup();
-			cm.add(ecb);
-			cm.add(cbc);
-			cm.add(cts);
-			cipherModePanel.add(ecb);
-			cipherModePanel.add(cbc);
-			cipherModePanel.add(cts);
-
-			JPanel paddingPanel = new JPanel();
-			JLabel padding = new JLabel("Padding");
-			paddingPanel.add(padding);
-			JRadioButton pkcs7 = new JRadioButton("PKCS7Padding");
-			JRadioButton noP = new JRadioButton("NoPadding");
-			JRadioButton zbP = new JRadioButton("ZeroBytePadding");
-			ButtonGroup pad = new ButtonGroup();
-			pad.add(pkcs7);
-			pad.add(noP);
-			pad.add(zbP);
-			paddingPanel.add(pkcs7);
-			paddingPanel.add(noP);
-			paddingPanel.add(zbP);
-
-			dialog.add(encryptPanel, 0);
-			dialog.add(cipherModePanel, 1);
-			dialog.add(paddingPanel, 2);
-
+			
+			String[] encModeList = {"", "AES", "DES", "PBEWithSHAAnd128BitAES-CBC-BC", "PBEWithMD5AndDES", "PBEWithSHAAnd40BitRC4"};
+			JComboBox encMode = new JComboBox(encModeList);
+			
+			String[] cipherModeList = {"", "ECB", "CBC", "CTS", "CTR", "OFB", "CFB", "GCM"};
+			JComboBox cipherMode = new JComboBox(cipherModeList);
+			
+			String[] paddingList = {"", "PKCS7Padding", "NoPadding", "ZeroBytePadding"};
+			JComboBox padding = new JComboBox(paddingList);
+			
+			JTextField pw = new JTextField("Passwort");
+			dialog.add(encMode, 0);
+			dialog.add(cipherMode, 1);
+			dialog.add(padding, 2);
+			dialog.add(pw);
+			
 			JButton go = new JButton("Go!");
 			dialog.add(go);
 
 			class EncL implements ActionListener {
 				public void actionPerformed(ActionEvent e) {
-					String encryption = "";
-					String cipherMode = "";
-					String padding = "";
-					if (aes.isSelected())
-						encryption = aes.getText();
-					if (des.isSelected())
-						encryption = des.getText();
-
-					if (ecb.isSelected())
-						cipherMode = ecb.getText();
-					if (cbc.isSelected())
-						cipherMode = cbc.getText();
-					if (cts.isSelected())
-						cipherMode = cts.getText();
-
-					if (pkcs7.isSelected())
-						padding = pkcs7.getText();
-					if (noP.isSelected())
-						padding = noP.getText();
-					if (zbP.isSelected())
-						padding = zbP.getText();
-
-					if (enc.getSelection() == null && cm.getSelection() == null && pad.getSelection() == null) {
+					String encryption = encMode.getSelectedItem().toString();
+					String cipherM = cipherMode.getSelectedItem().toString();
+					String pad = padding.getSelectedItem().toString();
+					
+					if (encMode.getSelectedItem() == null && cipherMode.getSelectedItem() == null && padding.getSelectedItem() == null) {
 						encrypted = textArea.getText();
 					} else {
-						Cryptography c = new Cryptography();
 						try {
-							if(encryption.equals("AES"))
-								encrypted = c.encryptAES(textArea.getText(), cipherMode, padding);
-							else if(encryption.equals("DES"))
-								encrypted = c.encryptDES(textArea.getText(), cipherMode, padding);
+							if(encryption.equals("AES")){
+								Cryptography c = new Cryptography();
+								encrypted = c.encryptAES(textArea.getText(), cipherM, pad);
+							}else if(encryption.equals("DES")){
+								Cryptography c = new Cryptography();
+								encrypted = c.encryptDES(textArea.getText(), cipherM, pad);
+							}else if(encryption.equals("PBEWithSHAAnd128BitAES-CBC-BC")){
+								PBCryptography c = new PBCryptography();
+								encrypted = c.encodePBEWithSHAAnd128BitAES_CBC_BC(textArea.getText(), pw.getText().toCharArray());
+							}
+								
 						} catch (Exception e1) {
 							e1.printStackTrace();
 						}
